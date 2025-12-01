@@ -7,7 +7,7 @@ export default function BookingConfirm(props) {
     // console.log("qrData: ",props?.route?.params?.qrData);
     // const [qrData, setQrData]
     const [pin ,setPin] = useState("1234");
-    const [qrData, setQrData] = useState(props?.route?.params?.qrData);
+    const [qrData, setQrData] = useState(props?.route?.params?.data);
     // console.log("QRData: ",props.route.params.detail);
 
     const handleCopy = () => {

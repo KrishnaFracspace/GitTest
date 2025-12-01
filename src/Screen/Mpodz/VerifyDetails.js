@@ -30,6 +30,7 @@ export default function VerifyDetails({route}) {
     const inputRefs = useRef([]);
     const [adhaarNum, setAdhaarNum] = useState(['', '', '', '', '', '', '', '', '', '', '', '']);
     const [digiUrl, setDigiUrl] = useState(null);
+    const [qrData, setQrData] = useState({});
 
     const [loading, setLoading] = useState(false);
     const [aadhaarData, setAadhaarData] = useState(null);
@@ -47,7 +48,7 @@ export default function VerifyDetails({route}) {
             }
         })();
 
-        // handleGenerateQr();
+        handleGenerateQr();
     }, []);
 
 //     useEffect(() => {
@@ -180,7 +181,8 @@ export default function VerifyDetails({route}) {
             let {data: res} = await GenerateQrCode(payload);
             const data = res.data;
             console.log('Response: ',data);
-            return data;
+            // return data;
+            setQrData(data);
         } catch(error) {
             console.error("Error in Generating Qr: ",error.response?.data || error.message);
         }
@@ -454,7 +456,7 @@ export default function VerifyDetails({route}) {
                 <TouchableOpacity onPress={() => {
                     // navigation.navigate('DisplayDetails');
                     // verify();
-                    navigation.navigate('BookingConfirm');
+                    navigation.navigate('BookingConfirm', {data : qrData});
                 }} style={{backgroundColor: "#eb2c19",alignItems:'center',padding: 15,borderRadius: 8,margin:20,marginTop:30}}>
                     <Text style={{ color: "#fff",fontFamily:'Poppins-SemiBold',fontSize:16 }}>Verify Now</Text>
                 </TouchableOpacity>
