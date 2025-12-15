@@ -398,7 +398,6 @@ export default function VerifyDetails({route}) {
                         )}
                     </View>
                 }
-            
             </View>
 
             <View style={{marginBottom:height*0.2}}>

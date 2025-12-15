@@ -62,13 +62,5 @@ export default function AppNavigator() {
             </Stack.Navigator>
         </GestureHandlerRootView>
     </MpodzProvider>
-    // <GestureHandlerRootView>
-      // <Stack.Navigator initialRouteName='FirstTest'>
-      //   <Stack.Screen name='FirstTest' component={FirstTest} options={{headerShown:false}}/>
-      // </Stack.Navigator>
-    // </GestureHandlerRootView>
-    // <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-    //   <Text style={{fontSize:20,color:'#000'}}>Hello</Text>
-    // </View>
   )
 }

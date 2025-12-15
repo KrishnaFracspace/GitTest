@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "773854409696",
+    "project_id": "mpodz-94a27",
+    "storage_bucket": "mpodz-94a27.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773854409696:android:9acb5222ee290a588af185",
+        "android_client_info": {
+          "package_name": "com.fractest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYWIpzJVv9PgycObEppF3FdWkN9hz2wxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

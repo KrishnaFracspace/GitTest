@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Image, TouchableOpacity, TextInput, Alert, Animated, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, Image, TouchableOpacity, TextInput, Alert, Animated, StyleSheet, Button } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { CountryPicker } from 'react-native-country-codes-picker';
 import Ico from 'react-native-vector-icons/AntDesign';
@@ -6,6 +6,10 @@ import Icon from 'react-native-vector-icons/Entypo';
 import { SendLoginOtp, VerifyLoginOtp } from './MPodzApi';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux';
+import { verifyOtpThunk } from '../../redux/slices/userSlice';
+import crashlytics from '@react-native-firebase/crashlytics';
+import analytics from '@react-native-firebase/analytics';
 
 export default function Login() {
 
@@ -49,17 +53,26 @@ export default function Login() {
 
         try {
             const { data: res } = await SendLoginOtp(payload);
-            console.log('Response:', res.message);
+            console.log('Response:', res);
 
             if (!res.success && res.message === "User with provided phone number does not exist!") {
                 Alert.alert("User does not exist. Please register first.");
                 return;
             }
 
+            if(res?.success){
+                analytics().logEvent('otp_sent_success', {
+                    phone: phone,
+                    country_code: selectedCode.code,
+                });
+                // console.log("handleLogin success");
+            }
+
             // setLogin(false);
 
         } catch (error) {
             console.log('Error in Login:', error.response?.data || error.message);
+            crashlytics().recordError(error);
             // Alert.alert("User does not exist. Please register first.");
             setLogin(true);
         } finally {
@@ -70,42 +83,77 @@ export default function Login() {
         }
     };
 
-    const verifyOtp = async() => {
-        const otp = otpDigits.join('');
-        let payload = JSON.stringify(
-            {
-                phone_number: phone,
+    
+
+    const dispatch = useDispatch();
+    const { loading, error, isLoggedIn } = useSelector(state => state.user);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+
+            analytics().logEvent('login_success', {
+                phone: phone,
                 country_code: selectedCode.code,
-                otp_code: otp,
-                otp_type: "login"
-            }
-        );
-        console.log('Verify OTP Payload: ',payload);
+            });
 
-        setIsLoading(true);
-        Animated.timing(animatedWidth, {
-            toValue: 1,
-            duration: 3000,
-            useNativeDriver: false
-        }).start();
-
-        try{
-            const {data : res} = await VerifyLoginOtp(payload);
-            console.log('Verify Otp: ',res);
-            if(res?.success){
-                await AsyncStorage.setItem('authToken', res.token);
-                await AsyncStorage.setItem('userPhone', phone);
-                navigation.navigate('MpodzStack');
-            }
-        }catch(error){
-            console.error("Error in Verifying Otp: ",error.response?.data || error.message);
-        }finally{
-            setTimeout(() => {
-                setIsLoading(false);
-                animatedWidth.setValue(0);
-            }, 300);
+            navigation.replace('MpodzStack');
         }
+    }, [isLoggedIn]);
+    
+    const verifyOtp = () => {
+        const otp = otpDigits.join('');
+
+        analytics().logEvent('verify_otp_attempt', {
+            phone: phone,
+            otp_length: otp.length,
+        });
+
+        dispatch(
+            verifyOtpThunk({
+                phone,
+                country_code: selectedCode.code,
+                otp_code: otp
+            })
+        );
     };
+
+
+    // const verifyOtp = async() => {
+    //     const otp = otpDigits.join('');
+    //     let payload = JSON.stringify(
+    //         {
+    //             phone_number: phone,
+    //             country_code: selectedCode.code,
+    //             otp_code: otp,
+    //             otp_type: "login"
+    //         }
+    //     );
+    //     console.log('Verify OTP Payload: ',payload);
+
+    //     setIsLoading(true);
+    //     Animated.timing(animatedWidth, {
+    //         toValue: 1,
+    //         duration: 3000,
+    //         useNativeDriver: false
+    //     }).start();
+
+    //     try{
+    //         const {data : res} = await VerifyLoginOtp(payload);
+    //         console.log('Verify Otp: ',res);
+    //         if(res?.success){
+    //             await AsyncStorage.setItem('authToken', res.token);
+    //             await AsyncStorage.setItem('userPhone', phone);
+    //             navigation.navigate('MpodzStack');
+    //         }
+    //     }catch(error){
+    //         console.error("Error in Verifying Otp: ",error.response?.data || error.message);
+    //     }finally{
+    //         setTimeout(() => {
+    //             setIsLoading(false);
+    //             animatedWidth.setValue(0);
+    //         }, 300);
+    //     }
+    // };
 
     const handleChange = (text, index) => {
         const updatedOtp = [...otpDigits];
@@ -201,6 +249,13 @@ export default function Login() {
                             }
                             setLogin(false);
                             handleLogin();
+
+                            // For firebase analytics....
+                            analytics().logEvent('send_otp_attempt', {
+                                phone: phone,
+                                country_code: selectedCode.code,
+                            });
+
                             // setVisible2(true);
                             // setVisible1(false); 
                         }}
@@ -213,6 +268,13 @@ export default function Login() {
                                 />
                             )}
                         </TouchableOpacity>
+
+
+                        
+                        <Button
+                            title="Test Crash"
+                            onPress={() => crashlytics().crash()}
+                        />
                     </View>
 
                     <TouchableOpacity onPress={() => {

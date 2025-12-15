@@ -14,7 +14,7 @@ export default function PrivacySecurity() {
 
   return (
     <SafeAreaView style={{flex:1}}>
-        <View style={{flex:1,backgroundColor:'#f5f5f5'}}>
+        <View style={{flex:1,backgroundColor:'#f5f5f5',marginTop:20}}>
             <View style={{padding:20,flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}>
                 <TouchableOpacity onPress={() => {
                     navigation.navigate('Account');

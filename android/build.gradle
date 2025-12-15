@@ -15,7 +15,65 @@ buildscript {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.6'
+        // Google Services Plugin (REQUIRED)
+        classpath 'com.google.gms:google-services:4.4.4'
     }
 }
 
+
+// plugins {
+//     // Needed for Firebase
+//     id 'com.google.gms.google-services' apply false
+
+//     // Crashlytics plugin
+//     id 'com.google.firebase.crashlytics' apply false
+// }
+
+// ❗ AFTER buildscript — now plugins block
+// plugins {
+//     id "com.google.gms.google-services" apply false
+//     id "com.google.firebase.crashlytics" apply false
+// }
+
 apply plugin: "com.facebook.react.rootproject"
+
+
+
+// buildscript {
+//     ext {
+//         buildToolsVersion = "35.0.0"
+//         minSdkVersion = 24
+//         compileSdkVersion = 35
+//         targetSdkVersion = 35
+//         ndkVersion = "27.1.12297006"
+//         kotlinVersion = "2.0.21"
+//     }
+
+//     repositories {
+//         google()
+//         mavenCentral()
+//     }
+
+//     dependencies {
+//         classpath("com.android.tools.build:gradle")
+//         classpath("com.facebook.react:react-native-gradle-plugin")
+//         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+
+//         // Crashlytics Gradle plugin
+//         classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.6'
+
+//         // Google services plugin
+//         classpath 'com.google.gms:google-services:4.4.4'
+//     }
+// }
+
+// plugins {
+//     // Needed for Firebase
+//     id 'com.google.gms.google-services' apply false
+
+//     // Crashlytics plugin
+//     id 'com.google.firebase.crashlytics' apply false
+// }
+
+// apply plugin: "com.facebook.react.rootproject"
